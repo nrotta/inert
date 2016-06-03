@@ -14,7 +14,7 @@ interface with a `file` method for serving file based resources.
 
  * Files are served with cache friendly `last-modified` and `etag` headers.
  * Generated file listings and custom indexes.
- * Precompressed file support for `content-encoding: gzip` and `content-encoding: brotli` responses.
+ * Precompressed file support for `content-encoding: gzip` and `content-encoding: br` responses.
  * File attachment support using `content-disposition`  header.
 
 ## Index

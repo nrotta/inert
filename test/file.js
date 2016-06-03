@@ -686,7 +686,7 @@ describe('file', () => {
             });
         });
 
-        it('changes etag when brotli content encoding is used', (done) => {
+        it('changes etag when br content encoding is used', (done) => {
 
             const server = provisionServer();
             server.route({ method: 'GET', path: '/file', handler: { file: Path.join(__dirname, '..', 'package.json') } });
@@ -697,7 +697,7 @@ describe('file', () => {
                 expect(res1.headers).to.include('etag');
                 expect(res1.headers).to.include('last-modified');
 
-                server.inject({ url: '/file', headers: { 'accept-encoding': 'brotli' } }, (res2) => {
+                server.inject({ url: '/file', headers: { 'accept-encoding': 'br' } }, (res2) => {
 
                     expect(res2.statusCode).to.equal(200);
                     expect(res2.headers.vary).to.equal('accept-encoding');
@@ -909,7 +909,7 @@ describe('file', () => {
             });
         });
 
-        it('returns a brotli file in the response when the request accepts brotli', (done) => {
+        it('returns a br file in the response when the request accepts br', (done) => {
 
             const server = provisionServer({ routes: { files: { relativeTo: __dirname } } });
             const handler = (request, reply) => {
@@ -919,11 +919,11 @@ describe('file', () => {
 
             server.route({ method: 'GET', path: '/file', handler: handler });
 
-            server.inject({ url: '/file', headers: { 'accept-encoding': 'brotli' } }, (res) => {
+            server.inject({ url: '/file', headers: { 'accept-encoding': 'br' } }, (res) => {
 
                 expect(res.statusCode).to.equal(200);
                 expect(res.headers['content-type']).to.equal('application/json; charset=utf-8');
-                expect(res.headers['content-encoding']).to.equal('brotli');
+                expect(res.headers['content-encoding']).to.equal('br');
                 expect(res.headers['content-length']).to.not.exist();
                 expect(res.payload).to.exist();
                 done();
@@ -951,7 +951,7 @@ describe('file', () => {
             });
         });
 
-        it('returns a plain file when not compressible (brotli)', (done) => {
+        it('returns a plain file when not compressible (br)', (done) => {
 
             const server = provisionServer({ routes: { files: { relativeTo: __dirname } } });
             const handler = (request, reply) => {
@@ -961,7 +961,7 @@ describe('file', () => {
 
             server.route({ method: 'GET', path: '/file', handler: handler });
 
-            server.inject({ url: '/file', headers: { 'accept-encoding': 'brotli' } }, (res) => {
+            server.inject({ url: '/file', headers: { 'accept-encoding': 'br' } }, (res) => {
 
                 expect(res.statusCode).to.equal(200);
                 expect(res.headers['content-type']).to.equal('image/png');
@@ -1011,18 +1011,18 @@ describe('file', () => {
             });
         });
 
-        it('returns a brotli file using precompressed file', (done) => {
+        it('returns a br file using precompressed file', (done) => {
 
             const content = Fs.readFileSync('./test/file/image.png.br');
 
             const server = provisionServer();
             server.route({ method: 'GET', path: '/file', handler: { file: { path: './test/file/image.png', lookupCompressed: true } } });
 
-            server.inject({ url: '/file', headers: { 'accept-encoding': 'brotli' } }, (res) => {
+            server.inject({ url: '/file', headers: { 'accept-encoding': 'br' } }, (res) => {
 
                 expect(res.statusCode).to.equal(200);
                 expect(res.headers['content-type']).to.equal('image/png');
-                expect(res.headers['content-encoding']).to.equal('brotli');
+                expect(res.headers['content-encoding']).to.equal('br');
                 expect(res.headers['content-length']).to.equal(content.length);
                 expect(res.rawPayload.length).to.equal(content.length);
                 done();
@@ -1044,15 +1044,15 @@ describe('file', () => {
             });
         });
 
-        it('returns a brotli file when precompressed file not found', (done) => {
+        it('returns a br file when precompressed file not found', (done) => {
 
             const server = provisionServer();
             server.route({ method: 'GET', path: '/file', handler: { file: { path: './test/file/note.txt', lookupCompressed: true } } });
 
-            server.inject({ url: '/file', headers: { 'accept-encoding': 'brotli' } }, (res) => {
+            server.inject({ url: '/file', headers: { 'accept-encoding': 'br' } }, (res) => {
 
                 expect(res.statusCode).to.equal(200);
-                expect(res.headers['content-encoding']).to.equal('brotli');
+                expect(res.headers['content-encoding']).to.equal('br');
                 expect(res.headers['content-length']).to.not.exist();
                 expect(res.payload).to.exist();
                 done();
@@ -1074,14 +1074,14 @@ describe('file', () => {
             });
         });
 
-        it('returns a 304 when using brotli precompressed file and if-modified-since set', (done) => {
+        it('returns a 304 when using br precompressed file and if-modified-since set', (done) => {
 
             const server = provisionServer();
             server.route({ method: 'GET', path: '/file', handler: { file: { path: './test/file/image.png', lookupCompressed: true } } });
 
             server.inject('/file', (res1) => {
 
-                server.inject({ url: '/file', headers: { 'if-modified-since': res1.headers.date, 'accept-encoding': 'brotli' } }, (res2) => {
+                server.inject({ url: '/file', headers: { 'if-modified-since': res1.headers.date, 'accept-encoding': 'br' } }, (res2) => {
 
                     expect(res2.statusCode).to.equal(304);
                     done();
@@ -1119,12 +1119,12 @@ describe('file', () => {
             });
         });
 
-        it('ignores precompressed file when connection compression is disabled (brotli)', (done) => {
+        it('ignores precompressed file when connection compression is disabled (br)', (done) => {
 
             const server = provisionServer({ compression: false });
             server.route({ method: 'GET', path: '/file', handler: { file: { path: './test/file/image.png', lookupCompressed: true } } });
 
-            server.inject({ url: '/file', headers: { 'accept-encoding': 'brotli' } }, (res) => {
+            server.inject({ url: '/file', headers: { 'accept-encoding': 'br' } }, (res) => {
 
                 expect(res.statusCode).to.equal(200);
                 expect(res.headers['content-type']).to.equal('image/png');
@@ -1558,7 +1558,7 @@ describe('file', () => {
                 });
             });
 
-            it('reads partial file content for a non-compressible file (brotli)', (done) => {
+            it('reads partial file content for a non-compressible file (br)', (done) => {
 
                 const server = provisionServer();
                 server.route({ method: 'GET', path: '/file', handler: { file: { path: Path.join(__dirname, 'file/image.png'), etagMethod: false } } });
@@ -1575,7 +1575,7 @@ describe('file', () => {
                     return Fs.createReadStream(path, options);
                 };
 
-                server.inject({ url: '/file', headers: { 'range': 'bytes=1-4', 'accept-encoding': 'brotli' } }, (res) => {
+                server.inject({ url: '/file', headers: { 'range': 'bytes=1-4', 'accept-encoding': 'br' } }, (res) => {
 
                     expect(res.statusCode).to.equal(206);
                     expect(res.headers['content-length']).to.equal(4);
@@ -1621,14 +1621,14 @@ describe('file', () => {
                 });
             });
 
-            it('returns 200 for dynamically compressed brotli responses', (done) => {
+            it('returns 200 for dynamically compressed br responses', (done) => {
 
                 const server = provisionServer();
                 server.route({ method: 'GET', path: '/file', handler: { file: { path: Path.join(__dirname, 'file/note.txt'), lookupCompressed: false } } });
-                server.inject({ url: '/file', headers: { 'range': 'bytes=1-3', 'accept-encoding': 'brotli' } }, (res) => {
+                server.inject({ url: '/file', headers: { 'range': 'bytes=1-3', 'accept-encoding': 'br' } }, (res) => {
 
                     expect(res.statusCode).to.equal(200);
-                    expect(res.headers['content-encoding']).to.equal('brotli');
+                    expect(res.headers['content-encoding']).to.equal('br');
                     expect(res.headers['content-length']).to.not.exist();
                     expect(res.headers['content-range']).to.not.exist();
                     expect(res.headers['accept-ranges']).to.equal('bytes');
@@ -1650,11 +1650,11 @@ describe('file', () => {
                 });
             });
 
-            it('returns a subset of a file when compression is disabled (brotli)', (done) => {
+            it('returns a subset of a file when compression is disabled (br)', (done) => {
 
                 const server = provisionServer({ compression: false });
                 server.route({ method: 'GET', path: '/file', handler: { file: { path: Path.join(__dirname, 'file/note.txt'), lookupCompressed: false } } });
-                server.inject({ url: '/file', headers: { 'range': 'bytes=1-3', 'accept-encoding': 'brotli' } }, (res) => {
+                server.inject({ url: '/file', headers: { 'range': 'bytes=1-3', 'accept-encoding': 'br' } }, (res) => {
 
                     expect(res.statusCode).to.equal(206);
                     expect(res.headers['content-encoding']).to.not.exist();
@@ -1674,6 +1674,22 @@ describe('file', () => {
                     expect(res.headers['content-encoding']).to.equal('gzip');
                     expect(res.headers['content-length']).to.equal(9);
                     expect(res.headers['content-range']).to.equal('bytes 10-18/41936');
+                    expect(res.headers['accept-ranges']).to.equal('bytes');
+                    expect(res.payload).to.equal('image.png');
+                    done();
+                });
+            });
+
+            it('returns a subset of a file using br precompressed file', (done) => {
+
+                const server = provisionServer();
+                server.route({ method: 'GET', path: '/file', handler: { file: { path: Path.join(__dirname, 'file/image.png'), lookupCompressed: true } } });
+                server.inject({ url: '/file', headers: { 'range': 'bytes=10-18', 'accept-encoding': 'br' } }, (res) => {
+
+                    expect(res.statusCode).to.equal(206);
+                    expect(res.headers['content-encoding']).to.equal('br');
+                    expect(res.headers['content-length']).to.equal(9);
+                    expect(res.headers['content-range']).to.equal('bytes 10-18/41978');
                     expect(res.headers['accept-ranges']).to.equal('bytes');
                     expect(res.payload).to.equal('image.png');
                     done();

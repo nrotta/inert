@@ -772,15 +772,15 @@ describe('directory', () => {
             });
         });
 
-        it('returns a brotli file using precompressed file', (done) => {
+        it('returns a br file using precompressed file', (done) => {
 
             const server = provisionServer();
             server.route({ method: 'GET', path: '/{p*}', handler: { directory: { path: './file', lookupCompressed: true } } });
 
-            server.inject({ url: '/image.png', headers: { 'accept-encoding': 'brotli' } }, (res) => {
+            server.inject({ url: '/image.png', headers: { 'accept-encoding': 'br' } }, (res) => {
 
                 expect(res.headers['content-type']).to.equal('image/png');
-                expect(res.headers['content-encoding']).to.equal('brotli');
+                expect(res.headers['content-encoding']).to.equal('br');
 
                 const content = Fs.readFileSync('./test/file/image.png.br');
                 expect(res.headers['content-length']).to.equal(content.length);
