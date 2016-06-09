@@ -1691,7 +1691,7 @@ describe('file', () => {
                     expect(res.headers['content-length']).to.equal(9);
                     expect(res.headers['content-range']).to.equal('bytes 10-18/41978');
                     expect(res.headers['accept-ranges']).to.equal('bytes');
-                    expect(res.payload).to.equal('image.png');
+                    expect(res.rawPayload).to.deep.equal(new Buffer([0x3f, 0x11, 0x01, 0x7e, 0x14, 0xc6, 0xcd, 0xce, 0x9b]));
                     done();
                 });
             });
